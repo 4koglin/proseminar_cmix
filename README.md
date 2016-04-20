@@ -2,6 +2,6 @@
 
 Das cMix-Verfahren von 2008
 
-Graaf, Maik-Chiron
-Koglin, Merlin
-Litjens, Anne
+Maik-Chiron Graaf, 
+Merlin Koglin, 
+Anne Litjens
