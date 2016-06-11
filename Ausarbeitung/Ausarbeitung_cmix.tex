@@ -151,17 +151,54 @@
 \chapter*{Abstract / Einleitung}
 \textit{Das ist die Zusammenfassung}
 
-Und das die Einleitung
+In der heutigen Zeit sind Nachrichten, die über das Internet versendet werden, nicht
+mehr weg zu denken. Zunehmend fragen sich die Benutzer ob ihre Anonymität bei
+Benutzung von Mails und Messengern gewährleistet wird. Deshalb gibt es in der IT-
+Sicherheit Verfahren, die Mithilfe von Kryptographischen-Techniken versendete
+Nachrichten verschlüsseln. Das C-Mix Verfahren, mit welchem wir uns in der
+vorliegenden Ausarbeitung auseinandersetzen, ist ein solches Verfahren. Es
+wurde von David Chaum, konzipiert und ist eine
+Weiterentwicklung der ebenso von ihm entwickelten Chaumschen Mixe aus dem Jahr
+1981. Da die Chaumsche Mixe bei heutiger Technik nicht mehr so effizient sind,
+wurde das C-Mix Verfahren entwickelt.
+Wir wollen uns in dieser Ausarbeitung
+näher damit beschäftigen, ob das Problem mit dem C-Mix verfahren gelöst wurden ist
+und ob das Verfahren neue Probleme bereit hält.
+Dafür benutzen wir die von uns ausgewählten Paper, die im Literaturverzeichnis
+gelistet sind als Quellen.
 
 
 \chapter{Übersicht Chaumsche Mixe}
 
 \section{Funktionsprinzip}
 
--> Verwendung onion routing?
+Die Chaumsche Mixe gewährleisten die Anonymität der
+Kommunikation, in dem sie Sender und Empfänger voreinander anonym halten. Dies
+gelingt, indem die zu verschickenden Nachrichten mehrere Stationen - sogenannte
+Mixe durchlaufen. Diese sorgen dafür, dass die Nachrichten sowohl Empfänger als
+auch Sender nicht zueinander in Beziehung gesetzt werden können. Damit dies
+gelingt haben die Mixe verschiedene Aufgaben. 
+Zum einen muss ein Mix die
+Nachrichten mithilfe eines Verschlüsselungssystems verschlüsseln und ein anderer
+später wieder entschlüsseln. Durch diese Methode des Umkodieren ist es nicht mehr
+möglich eine Beziehung zwischen Eingangs und Ausgangsnachrichten zu finden. Ein
+anderer Mix muss die Nachrichten sammeln und ein weiterer umsortieren, damit
+man nicht ausgehend von der Reihenfolge des Eintreffens und Weiterleitens der
+Nachrichten am Mix eine Beziehung zwischen Sender und Empfänger vorfinden
+kann. Mithilfe einer Rückadresse, die als Teil einer Nachricht gesendet wird und
+einem Mix, der diese Rückadresse zwischen speichert und umkodiert können sich
+zwei Nutzer nun gegenseitig Nachrichten senden und dabei anonym bleiben.[3][4]
+
 \section{Probleme}
 
-Das Problem ist
+Die Chaumsche Mixe haben durchaus ihre Grenzen, innerhalb eines Echtzeitsystems
+ist das Sammeln der Nachrichten sehr ineffizient, da man durchaus lange warten
+muss um mehrere Nachrichten zusammen zu bekommen. Deshalb wird in solchen
+Echtzeitsystemen das Sammeln der Nachrichten weggelassen oder kurz gehalten.
+Das Umsortieren der Nachrichten kann deshalb nicht oder nur mit wenig Nachrichten
+erfolgen. Daraus resultiert, dass die Sicherheit sinkt und das ganze Verfahren in
+Echtzeitsystemen somit angreifbarer wird.[2][3][4]
+
 \section{vorherige Ansätze}
 
 \chapter{Das cMix Verfahren}
@@ -175,9 +212,102 @@ der einen Seite eine Steigerung der Effizienz von Mix-Netzen, d.h. bessere Perfo
  Diese werden dann als Seed für einen Pseudozufallsgenerator verwendet, um weitere (gleiche) Schlüssel zu erzeugen.
 
 \section{Funktionsprinzip}
+\subsection{Übersicht}
+Seien $m$ die Anzahl der Nutzer des cMix-Systems mit $n$ Mixknoten $N_1, N_2, ... ,  N_n$. 
+
+Sei $T$ ein Netzwerkknoten, welcher eingehende Nachrichten in Bündeln sortiert und zur weiterer Kommunikation dient.
+
+$\beta$ Anzahl der Nachrichten, die ein Knoten gleichzeitig verarbeiten kann, wobei $\beta \geq m$ gilt.
+\begin{figure}[h]
+ \caption{Communication Overview}
+\includegraphics[width=0.5\textwidth]{Bilder/commu_model.png}
+\end{figure}
 
 
-\section{Sicherheitsanalyse}
+Nun gibt es eine Precomputation Phase, bei der die Knoten eine Permutation von $\beta$ Nachrichten festlegen, diese Permutation wird dann in der Echzeit-Phase zum Mixen verwendet.
+Die Echtzeit-Phase wird wiederum in Runden aufgeteilt, wobei jede Runde eine Permutation auf die Nachrichten angewendet wird.
+
+
+\subsection{Pre-Communication}
+
+
+Vor der Benutzung des System, muss jeder Nachrichtensender jeweils einen symmetrischen Schlüssel mit jedem der Mixknoten austauschen.
+Für jeden Knoten $N_i$ und jeden Nutzer $U_j$ sei dieser Schlüssel $MK_{i,j}$.
+Dieser Schlüssel kann z.B. mit Hilfe des Diffie-Hellman Verfahrens ausgetauscht werden.
+
+Bei Kommunikation mit dem Mixnetz, ver- oder entschüsselt jeder Teilnehmer jede seiner Nachrichten mit Schlüsseln, die aus den gemeinsamen Schlüsseln $MK_{i,j}$ erzeugt werden.
+Genauer gesagt, werden diese Schlüssel als Ausgabe eines Pseudozufallszahlengeneratoren berechnet, welche bei gleichem Startwert die gleiche Zahlenfolge generieren.
+Als Startwert werden hier die Schüsselpaare $MK_{i,j}$ verwendet, so dass Sender und Node jeweils die gleichen Keys erzeugen.
+Zum Verschlüsseln einer Nachricht, berechnet der Nutzer aus den Schlüsseln $MK_{i,j}$
+einen zusammengesetzten Schüssel: $Ka_j = \prod_{i=1}^{n} ka_{i,j}$,
+dann kann die Nachricht $M_1$ durch $M_1 \times Ka_{j}^{-1}$ verschlüsselt werden.
+
+cMix verabeitet jedes Bündel von Nachrichten in zwei Phasen:
+precomputation and real-time
+Während jeder dieser Phasen führt cMix einen bestimmten Hin- und Rückweg an Berechnungschritten aus.
+Dafür werden die Nachrichten von jedem Knoten in einem Puffer gespeichert (auch map gennant).
+Bei jeden Schritt werden die Berechnungen in diesem Puffer ausgeführt.
+Jeder Knoten verbindet jeden gemeinsamen Schlüssel $MK_{i,j}$ mit einem bestimmten Abschnitt im Puffer.
+Während des Hinwegs der Echzeit-Phase wird jeder gemeinsamer Key für jeden Abschnitt mit den generierten Schlüssen aus der Precomputation Phase ausgetauscht.
+Auf dem Rückweg werden die gemeinsamen Schlüssel wieder hinein multipliziert.
+So werden in den Echzeit-Phase rechenintesive public-key Operationen vermieden
+
+
+Festlegung der Permutation?
+
+
+\subsection{cMix Protokoll}
+\subsubsection{Precomputation Phase}
+
+\begin{enumerate}
+	\item \textit{Preprocessing} \\
+	Für die Precomputation wird als erster Schritt von jedem Knoten $N_i$ eine zufälliger Wert $r_{i,j}$ für jeden Bereich $j$ im Nachrichtenpuffer generiert.
+Jeder Mixknoten verschlüsselt mittels Elgamal-Verschlüsselungsverfahren
+das Inverse des jeweiligen Wertes $r_{i,j}^{-1}$ und sendet das Resultat $\varepsilon (r_i^{-1})$ an den Verteilerknoten.
+Der Verteilerknoten berechnet das komponentenweise direkte Produkt $\varepsilon R{_n-1}$ der verschlüsselten Vektoren $\varepsilon (r_i^{-1})$ und sendet das Resultat an den ersten Mixknoten.
+	
+	\item \textit{Mixing} \\
+	Im zweiten Schritt der Precomputation permutiert jeder Mixknoten $N_i$ nacheinander den Nachrichten Puffer mit der Anfangs festgelegten Permutation $p_i$.
+Außerdem wird ein weiterer Vektor mit zufälligen Werten $s_i^{-1}$ hinzumultipliziert.
+Der letzte Mixknoten hat also den Output $\varepsilon ((P(R) \times S )^{-1})$,
+wobei $P$ aus den Kompisitionen aller $p_i$'s besteht und $S$ das direkte Produkt der $s_i$'s darstellt.
+Dieser Output wird wiederum an den Netzwerkknoten und den ersten Mixknoten gesendet.
+
+	\item \textit{Postprocessing} \\
+	Dann wird im dritten Schritt der Precomputation von jedem Mixknoten $N_i$ 
+der Entschüsselungsteil $D(i,r)$ aus $\varepsilon ((P(R) \times S )^{-1})$ berechnet.
+Um die Entschlüsselung durchzuführen, müsste ein Knoten alle $D(i,r)$ kennen.
+\end{enumerate}
+
+\subsubsection{Echzeit Phase}
+\begin{enumerate}
+	\item \textit{Preprocessing} \\
+	Als erster Schritt sendet jeder Mixknoten $N_i$ das Produkt aus den gemeinsam genutzen Schlüsseln $ka_i$ und seinen zufällig generierten Werten als Vektor $r_i$ an den Netzwerkknoten.
+Dieser multipliziert diese Werte dann mit den Nachrichten von den Sendern.
+Damit wird aus $M \times Ka^{-1}$ das Produkt $M \times R$, wobei nur Multiplikation verwendet hier.
+	
+	\item \textit{Mixing} \\
+	Im zweiten Schritt der Echzeit-Phase ordnet jeder nacheinander Mixknoten $N_i$ seinen Nachrichtenpuffer mit der festgelegten Permutation $p_i$ und multipliziert den in Precomputation Phase, Schritt 2 generierten Vektor von zufälligen Werten $s_i$ hinzu.
+Das Resultat des letzten Mixknotens ist $P(M \times R) \times S$.
+Dieses wird an den Netzwerkknoten gesendet.
+
+	
+	\item \textit{Postprocessing} \\
+Im letzten Schritt, gibt jeder Mixknoten seinen Entschüsselungsanteil an den Netzwerkknoten, welcher dadurch die Nachrichten entschlüsseln, aber nicht mehr mit einem Sender verknüpfen kann.
+\end{enumerate}
+
+
+
+
+\begin{figure}[h]
+\includegraphics[width=0.8
+\textwidth]{Bilder/cmix_overview.png}
+ \caption{cMix Overview}
+\end{figure}
+\section{Analyse}
+\subsection{Sicherheit}
+\subsection{Performance}
+
 
 
 
