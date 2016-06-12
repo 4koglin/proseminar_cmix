@@ -31,15 +31,6 @@
 \usepackage{courier}
 % }}}
 
-% Biblatex {{{
-% \usepackage[
-%     style=alphabetic,
-%     backend=biber,
-%     backref=true
-%     ]{biblatex}             % Biblatex mit alphabetischem Style und biber.
-% \bibliography{Literatur.bib}% Dateiname der bib-Datei.
-% }}}
-
 % Dokument- und Texteinstellungen {{{
 \usepackage[
     a4paper,
@@ -164,8 +155,7 @@ wurde das C-Mix Verfahren entwickelt.
 Wir wollen uns in dieser Ausarbeitung
 näher damit beschäftigen, ob das Problem mit dem C-Mix verfahren gelöst wurden ist
 und ob das Verfahren neue Probleme bereit hält.
-Dafür benutzen wir die von uns ausgewählten Paper, die im Literaturverzeichnis
-gelistet sind als Quellen.
+Die Ausarbeitung orientiert sich am Paper \cite{DBLP:journals/iacr/DavidChaumJKKRS16} von David Chaum et al.
 
 
 \chapter{Übersicht Chaumsche Mixe}
@@ -187,7 +177,7 @@ man nicht ausgehend von der Reihenfolge des Eintreffens und Weiterleitens der
 Nachrichten am Mix eine Beziehung zwischen Sender und Empfänger vorfinden
 kann. Mithilfe einer Rückadresse, die als Teil einer Nachricht gesendet wird und
 einem Mix, der diese Rückadresse zwischen speichert und umkodiert können sich
-zwei Nutzer nun gegenseitig Nachrichten senden und dabei anonym bleiben.[3][4]
+zwei Nutzer nun gegenseitig Nachrichten senden und dabei anonym bleiben.\cite{Chaum:1981:UEM:358549.358563} \cite{sampigethaya2006survey}
 
 \section{Probleme}
 
@@ -197,7 +187,7 @@ muss um mehrere Nachrichten zusammen zu bekommen. Deshalb wird in solchen
 Echtzeitsystemen das Sammeln der Nachrichten weggelassen oder kurz gehalten.
 Das Umsortieren der Nachrichten kann deshalb nicht oder nur mit wenig Nachrichten
 erfolgen. Daraus resultiert, dass die Sicherheit sinkt und das ganze Verfahren in
-Echtzeitsystemen somit angreifbarer wird.[2][3][4]
+Echtzeitsystemen somit angreifbarer wird.\cite{Chaum:1981:UEM:358549.358563} \cite{sampigethaya2006survey}
 
 \section{vorherige Ansätze}
 
@@ -225,7 +215,7 @@ $\beta$ Anzahl der Nachrichten, die ein Knoten gleichzeitig verarbeiten kann, wo
 
 
 Nun gibt es eine Precomputation Phase, bei der die Knoten eine Permutation von $\beta$ Nachrichten festlegen, diese Permutation wird dann in der Echzeit-Phase zum Mixen verwendet.
-Die Echtzeit-Phase wird wiederum in Runden aufgeteilt, wobei jede Runde eine Permutation auf die Nachrichten angewendet wird.
+Die Echtzeit-Phase wird wiederum in Runden aufgeteilt, wobei jede Runde eine Permutation auf die Nachrichten angewendet wird. \cite{ribarski2012mixnets}
 
 
 \subsection{Pre-Communication}
@@ -304,9 +294,77 @@ Im letzten Schritt, gibt jeder Mixknoten seinen Entschüsselungsanteil an den Ne
 \textwidth]{Bilder/cmix_overview.png}
  \caption{cMix Overview}
 \end{figure}
+
+\subsubsection{Ergänzungen}
+
+Das cMix Protokoll dient in erster Linie dem Schutzziel \textit{Anonymität},
+damit für die zu übermitteldenen Nachrichten auch Vertraulichkeit sichergestellt werden soll, müssen diese vorher vom Sender verschlüsselt werden (z.B. duch einen öffentlichen Schlüssel einer assymetrischen Verschlüsselung).
+Es ist aber auch möglich, diese Verschüsselung ohne großen Rechenaufwand in das cMix Verfahren einzubauen, wodurch wiederum aufwändige Publickey-Operationen vermieden werden.
+
+
 \section{Analyse}
+
+
 \subsection{Sicherheit}
+
+Chaum et al. untersuchen in ihrer Arbeit über cMix auch die Sicherheit des entwickelten Verfahrens.
+
+\subsubsection{Anonymität}
+
+Hierfür wird zuerst eine "ideale Welt" betrachtet, ein Modell, bei der jeder Mixknoten jeweils privat mit den anderen Mixknoten und zusätzlich mit einem vertraulichen dritten Punkt kommunizieren kann.
+In diesem Modell gibt es keine kryptografischen Operationen wie Ver- und Entschlüsselung, diese werden hier durch den vertraulichen dritten Punkt sichergestellt.
+Dann wird gezeigt, dass dieses Modell die Anonymität des Senders gewährleistet.
+
+Von diesem Modell wird eine \glqq reale Simulation\grqq abstrahiert, wobei Eigenschaften des Modells durch Eigenschaften des cMix Protokolls ersetzt werden.
+Damit wird gezeigt, dass cMix das Modell erfüllt und somit Anonymität sicherstellt.
+
+\subsubsection{Integrität}
+
+Die Integrität ist nach Chaum nur gegeben, wenn von den folgenden Bedingungen eine zutrifft.
+\begin{itemize}
+\item Die Nachricht $M$ wird unmodifiziert an den Empfänger weitergeleitet.
+\item Alle Mixknoten wissen, dass das cMix Protokoll nicht richtig durchgeführt wurde.
+\end{itemize}
+
+Auf den ersten Punkt wird in diesem Paper nicht weiter eingegangen.
+Für den zweiten Punkt wird ein Mechanismus mit dem Namen "Randomized Partial Checking" (vergleiche \cite{jakobsson2002making}) verwendet, welches eine deterministische Verifkation aller ausgehenden Nachrichten im Vergleich zu deren permutierten Eingangsnachrichten durchführt. 
+Hierbei wird neben der Integrität auch sichergestellt, dass die Permutationen korrekt ausgeführt werden.
+
+
 \subsection{Performance}
+
+Die Performance wird durch Chaum et al. auf der einen Seite analysiert, aber auch mit Hilfe eines entwickelten Protoypens gemessen.
+
+Der Prototyp wurde in Python implementiert und lief während der Tests auf Instanzen des \textit{Amazon Web Service EC2}, wobei für jeden Mixknoten zwei Intel Xeon E5-2680 und 3,75 GB Arbeitsspeicher zur Verfügung standen.
+
+Es wurden 100 Vorberechnungen und verschiedene Echzeit-Phasen mit bis zu 1000 Nachrichten getestet, wobei eine 1024-bit ElGamal-Verschlüsselung verwendet wurde.
+
+Die Tabelle \ref{fig:messung} zeigt einige gemessene Werte des Tests.
+
+Zu bestehenden Mixnetzen ist dies eine eindeutige Verbesserung,
+z.B. braucht das re-encryption Mixnet für die Verarbeitung von 1000 Nachrichten bei einer Schlüsselänge von 512-bit bis zu 40 Sekunden, bei einer Schlüssellänge von 1024-bit sogar bis zu 250 Sekunden.\cite{ribarski2012mixnets}
+
+
+
+\begin{figure}
+
+\begin{tabular}{c|c|c}
+
+Anzahl Nachrichten & Vorberechnung (Durchschnitt in Sekunden) & Echtzeit (Durchschnitt in Sekunden) \\ 
+\hline 
+50 & 1.56 & 0.20 \\ 
+\hline 
+100 & 3.02 & 0.33 \\ 
+\hline 
+500 & 14.59 & 1.51 \\ 
+\hline 
+1000 & 28.87 & 3.09 \\ 
+
+\end{tabular} 
+\caption{Messungen anhand eines Prototypens} \label{fig:messung} 
+\end{figure}
+
+
 
 
 
@@ -314,26 +372,8 @@ Im letzten Schritt, gibt jeder Mixknoten seinen Entschüsselungsanteil an den Ne
 \chapter{Schlussbemerkungen / Fazit}
 
 
-% ================================Literaturliste-Muster==============================
-\newpage
-\thispagestyle{empty}
-\label{sec:literaturliste}
-\par\textbf{\textsf{Thema:}} Privacy Enhancing Technologies zum Schutz von Kommunikationsbeziehungen
-\par\textbf{\textsf{Bearbeiter:}} Eva Musterfrau, Heinz Mustermann
-\par\textbf{\textsf{Datum:}} \today
-\bigskip
-\par\textbf{\Large\textsf{Literaturliste}}
-
-David Chaum: Untraceable Electronic Mail, Return Addresses, and Digital Pseudonyms. Communications of the ACM 24/2 (1981) 84--88.
-
-David Chaum: The Dining Cryptographers Problem: Unconditional Sender and Recipient Untraceability. Journal of Cryptology 1/1 (1988) 65--75.
-
-David Goldschlag, Michael Reed, Paul Syverson: Onion Routing for Anonymous and Private Internet Connections. Communications of the ACM 42/2 (1999) 39--41.
-
-Andreas Pfitzmann: Diensteintegrierende Kommunikationsnetze mit teilnehmerüberprüfbarem Datenschutz. IFB 234, Springer-Verlag, Berlin 1990.
-
-Wei Wang, Mehul Motani, Vikram Srinivasan: Dependent link padding algorithms for low latency anonymity systems. Proc. 15th ACM conference on Computer and communications security. ACM, 2008, 323--332.
-
+\bibliography{biblio.bib}
+\bibliographystyle{alpha}
 
 
 \end{document}
