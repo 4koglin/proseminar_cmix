@@ -1,0 +1,463 @@
+% ===============================================================================
+% = LaTeX Beamer Template des Arbeitsbereichs Sicherheit in verteilten Systemem
+% = (c) 2012 Prof. Dr. Hannes Federrath, Uni Hamburg, Fachbereich Informatik
+% = http://www.informatik.uni-hamburg.de/svs/
+% ===============================================================================
+%
+\documentclass[t, xcolor=dvipsnames]{beamer} 
+% Option t              Place text of slides at the (vertical) top of the slides.
+% Option handout        Ein PDF ohne Pausen und Overlayeffekte erzeugen.
+% Option aspectratio=43 169 => 16:9, 1610 => 16:10, 43 => 4:3
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+%\usepackage{graphicx}
+\usepackage[T1]{fontenc} % 8-Bit-Zeichen; ermöglicht korrektes Kopieren von Umlauten aus dem pdf 
+\usepackage[scaled]{helvet}
+
+\usepackage{graphicx,xcolor}
+
+\usepackage{beamerthemedefault}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+% Ränder definieren
+\setbeamersize{text margin left=5ex, text margin right=5ex}
+
+% Farbdefinitionen
+\definecolor{svsgrau1}{RGB}{191,191,191} % Balken in Kopfzeile
+\definecolor{svsgrau2}{RGB}{123,123,123} % Folienüberschriften
+\definecolor{svsrot}{RGB}{255,0,0} % Bullets
+\definecolor{svshellblau1}{RGB}{153,204,255} % Block Hintergrund
+\definecolor{svshellblau2}{RGB}{24,113,248} % Anstrich Ebene 2
+\definecolor{svsdunkelblau}{RGB}{38,82,128} % Text der Ebene 1
+
+% Navigationsleiste ausblenden
+\beamertemplatenavigationsymbolsempty 
+
+% Farben der Bullets der Ebenen
+\setbeamercolor{itemize item}{fg=svsrot}
+\setbeamercolor{itemize subitem}{fg=svshellblau2}
+\setbeamercolor{enumerate item}{parent=itemize item}
+\setbeamercolor{enumerate subitem}{parent=itemize subitem}
+
+% Formen der Bullets der Ebenen
+\setbeamertemplate{itemize item}[circle] 
+\setbeamertemplate{itemize subitem}{--} 
+\setbeamertemplate{itemize subsubitem}[circle] 
+
+% Farben der Texte 
+\setbeamercolor{title}{fg=black}
+\setbeamercolor{structure}{fg=svsgrau2}
+\setbeamercolor{section in toc}{fg=black}
+\setbeamercolor{framesubtitle}{fg=svsdunkelblau}
+\setbeamercolor{itemize/enumerate body}{fg=svsdunkelblau}
+\setbeamercolor{itemize/enumerate subbody}{fg=black}
+\setbeamercolor{itemize/enumerate subsubbody}{fg=black}
+
+% Zeichensätze der Texte
+\setbeamerfont{author}{size=\normalsize}
+\setbeamerfont{institute}{size=\normalsize}
+\setbeamerfont{date}{size=\normalsize}
+\setbeamerfont{frametitle}{size=\large}
+\setbeamerfont{framesubtitle}{size=\footnotesize\raggedleft}
+\setbeamerfont{sections/subsections in toc}{size=\normalsize}
+\setbeamerfont{itemize/enumerate body}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\normalsize}
+
+% Definitionen für farbig hinterlegten Block 
+\setbeamertemplate{blocks}[rounded]
+\setbeamercolor{block title}{fg=black,bg=svshellblau1}
+\setbeamercolor{block body}{parent=normal text,use=block title,bg=block title.bg!25!bg}
+\setbeamerfont{block title}{size=\normalsize}
+\setbeamerfont{block body}{size=\normalsize}
+
+% Definitionen für Agenda (FIXME: noch stärker an normale Listendefs. anpassen)
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[square]
+
+% Kopfzeile
+\setbeamertemplate{headline}{
+	\includegraphics[height=8mm]{pic/UHH-Logo_2010_ohneText.png}%
+	\color{svsgrau1}\rule{\paperwidth}{8mm}\newline
+	\mbox{}\rule{1em}{0pt}\rule{0pt}{8ex}
+	\dotfill\newline\vspace{-7.3ex}
+}
+
+% Fusszeile
+\setbeamertemplate{footline}[text line]{
+	\parbox[b]{50mm}{\insertframenumber\\[1ex]}
+}
+
+% Hintergrund Titelseite
+\defbeamertemplate{background canvas}{titlepage}{%
+	{\color{svsgrau1}\vrule width\paperwidth height0.7\paperheight}%
+	{\color{white}\vrule width\paperwidth height0.3\paperheight}%
+}
+
+% =============================
+% = Ab hier Inhalte ändern... 
+% =============================
+
+\title{Das c-mix Verfahren }
+\author[Merlin Koglin, Maik Graaf]{Merlin Koglin, Maik Graaf}
+% \institute[Uni Hamburg]{Universität Hamburg\\ Fachbereich Informatik}
+\date{}
+
+\begin{document}
+
+\begingroup
+	\setbeamertemplate{background canvas}[titlepage]
+	\begin{frame}[plain]
+		\vskip8mm
+		\includegraphics[width=2.2cm]{pic/svs_logo_uhhred.png}
+		% \vskip-20mm % dies geht nur bei kurzen Vortragstiteln
+		\titlepage
+		\vspace{\fill}
+		\includegraphics[width=2.9cm]{pic/UHH-Logo_2010_Farbe_RGB_hires_nomargin.png}
+		\vskip20pt
+	\end{frame}
+\endgroup
+
+\begin{frame}{Agenda}
+	\tableofcontents
+\end{frame}
+
+\section{Motivation} % erscheint in Agenda
+
+\subsection{Chaumsche Mixe} % erscheint in Agenda
+\begin{frame}
+	\frametitle{Ansatz der Chaumische Mixe}
+	\begin{itemize}
+		\item Gewährleistung der Anonymität
+			\begin{itemize}
+				\item Mixe werden durchlaufen um die Beziehung zwischen Sender und Empfänger zu verschleiern
+		        \item Im Mixnetz findet eine „Zwiebelschalen“ artige Entschlüsselung statt
+		        \item Mithilfe der Rückadresse wird der Empfänger einer Nachricht bestimmt
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+\subsection{Probleme} % erscheint in Agenda
+\begin{frame}
+	\frametitle{Probleme bisheriger Mix Verfahren}
+	\begin{itemize}
+		\item In Echtzeitsystemen
+			\begin{itemize}
+				\item Lange warte Zeiten beim Sammeln der Nachrichten
+				\item Der Sammelschritt wird deshalb kurz gehalten oder sogar weggelassen
+				\item Das Verfahren wird somit angreifbarer
+				\item Für mobile Geräte ungeeignet aufgrund des großen Zeit und Energie Aufwands
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+\subsection{Idee} % erscheint in Agenda
+\begin{frame}
+	\frametitle{Idee von David Chaum}
+	\begin{itemize}
+		\item Vermeidung von Schlüsselberechnungen in Echtzeit 
+			\begin{itemize}
+				\item Steigerung der Effizienz von Mix-Netzen
+				\item Energieaufwand verringern
+				\item Schlüsselberechnung vor der Kommunikation
+				\item Schlüssel Austausch zwischen Sender und Mixknoten
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+
+\section{c-mix Verfahren} % erscheint in Agenda
+\subsection{Übersicht} % erscheint in Agenda
+\begin{frame}
+	\frametitle{Kommunkationsübersicht}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Übersicht der zwei Phasen}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Vorbereitung}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\subsection{Precomputation Phase} % erscheint in Agenda
+
+\begin{frame}
+	\frametitle{Precomputation - Step 1}
+	\begin{itemize}
+				\item Pre Processing
+
+				\item Knoten $N_1$, ... $N_n$ erzeugen einen zufälligen Vektor $r_i$
+				\begin{itemize}
+					\item Vektor enthält einen zufälligen Wert für jeden Nachrichtenslot
+				\end{itemize}
+				\item Verschlüsselung mittes ElGamal $\rightarrow$ $E(r_i^{-1})$, Resultat wird an den Network Handler gesendet
+				\begin{itemize}
+					\item Diese Verschlüsselung muss dann in der Echzeitphase nicht mehr durchgeführt werden
+				\end{itemize}
+				\item NH berechnet Produkt aus allen $E(r_n)$ $\rightarrow$ $E(R_n^{-1})$  
+		\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Precomputation - Step 2}
+	\begin{itemize}
+				\item Mixing
+				\begin{enumerate}
+					\item Jeder Knoten erzeugt einen weiteren zufälligen Vektor $s_i$
+					\item $E(R_n^{-1})$ wird von jedem Knoten nacheinander mit der jeweils festgelegten Permutation permutiert (Mixing) und gleichzeit der erzeugte $s_i^{-1}$ hineinmultipliziert
+				\item Der letzte Knoten erzeugt damit $E(P_n(R_n^{-1}) \times S_n^{-1})$
+				\end{enumerate}
+
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Precomputation - Step 3}
+	\begin{itemize}
+		\item Post Processing
+		\begin{enumerate}
+			\item Jeder Knoten berechnet nun aus $E(P_n(R_n^{-1}) \times S_n^{-1})$ seinen Entschlüsselungsanteil $D(i, r)$ für den zufälligen Vektor $r_i$ aus Schritt 1.
+			\item Das jeder Knoten einen eigenen Entschlüsselungsanteil berechnen kann, liegt an der ElGamal Verschlüsselung, die diese Möglichkeit bietet.
+		\end{enumerate}
+		
+	
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Precomputation - Return Path}
+	\begin{itemize}
+		
+		\item Step 1
+		\begin{enumerate}
+			\item Nodes erzeugen zufällige Vektoren $E({s'}_i^{-1})$ (ElGamal verschlüsselt).
+			\item Permutation rückwärts, der letzte Knoten beginnt, gleichzeitig werden $s'^{-1}$ dazumultipliziert
+			\item Der erste Knoten erhält $E({S'}_1^{-1})$
+		\end{enumerate}
+		\item Step 2
+		\begin{enumerate}
+			\item Wie vorher werden wieder Entschüsselungsanteile für $E({S'}_1^{-1})$ von allen Knoten berechnet
+		\end{enumerate}
+		\item 
+		
+		 
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\subsection{Realtime Phase} % erscheint in Agendae
+\begin{frame}
+	\frametitle{Echzeit Phase - Step 1}
+	\begin{itemize}
+		\item Preprocessing
+		\begin{enumerate}
+		\item Ein User verschüsselt seine Nachricht $M$ mit seinem Schüssel $M \times ka_i^{-1}$ und sendet diese an den NH, dieser erhält also $\color{Mahogany}M \times Ka^{-1}$
+		\item Nun sendet jeder Knoten $N_i$ seinen Wert $\color{BlueViolet}ka_i \times r_i$ an den NH.
+		\item Der NH kann damit die $Ka^{-1}$ mit den zufälligen Vektoren $r_i$ der Knoten austauschen
+		\item $ \color{Mahogany} M \times Ka^{-1}$ $\times \sum_{i=1}^n \color{BlueViolet}ka_i \times r_i$ $= M \times R_n$
+
+		\end{enumerate}
+
+		
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Echzeit Phase - Step 2}
+	\begin{itemize}
+		\item Mixing
+		\begin{itemize}
+			\item Jeder Knoten permutiert nacheinander $M \times R_n$ und multipliziert den zufälligen Vektor $S_i$ mit ein
+			\item Der letzte Knoten erhält damit $\color{Mahogany}P_n(M \times R_n) \times S_n)$
+		\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Echzeit Phase - Step 3}
+	\begin{itemize}
+		\item Entschlüsselungsanteil
+			\begin{itemize}
+				\item Die Knoten $N_1$ bis $N_{i}$ senden ihren Entschlüsselungsanteil $D(i,x)$ an den NH
+				
+		\item Entschlüsselung
+		\begin{itemize}
+				\item Der NH Entschlüsselt $\color{OliveGreen} E(P_n(R_n^{-1}) \times S_n^{-1})$ mittels $D(n,x)$
+				\item $\color{Mahogany}P_n(M \times R_n) \times S_n$ $\times$ $\color{OliveGreen}P_n(R_n^{-1}) \times S_n^{-1} = \color{Emerald} P_n(M)$
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+
+\section{Analyse}
+\subsection{Sicherheit}
+\begin{frame}
+	\frametitle{Anonymität}
+	\begin{itemize}
+		\item Anhand eines Modells
+			\begin{itemize}
+				\item Private Kommunikation der Mixknoten untereinander und eines vertraulichen dritten Punktes
+				\item Keine Kryptographischen Operation, Sicherstellung durch den vertraulichen dritten Punkt
+				\item „reale Simulation“ des Modells mit Eigenschaften des cMix Protokolls zeigt Anonymität
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Integrität}
+	\begin{itemize}
+		\item Die Integrität ist gegeben wenn
+			\begin{itemize}
+				\item Die Nachricht M unmodifiziert und an den Empfänger weitergeleitet wird oder...
+				\item Alle Mixknoten wissen, dass das cMix Protokoll nicht richtig durchgeführt wurde
+					\begin{itemize}
+						\item Sicherstellung durch den Mechanismus „Randomized Partial Checking“
+					\end{itemize}
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Vertraulichkeit}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+\subsection{Performance}
+\begin{frame}
+	\frametitle{Protoyp}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+\section{Andwendung}
+\subsection{Privategrety}
+\begin{frame}
+	\frametitle{Einbettung in PrivaTegrity}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+\subsection{Kritik}\begin{frame}
+	\frametitle{Backdoor}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Der Arbeitsbereich Sicherheit in Verteilten Systemen (SVS)}
+	\begin{block}{Lorem ipsum dolor}
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+	\end{block}
+	\begin{itemize}
+		\item Themen
+			\begin{enumerate}
+				\item Privacy Enhancing Technologies (PET)
+				\item Security Management \& Risk Management
+				\item Security of Mobile Systems
+			\end{enumerate}
+		\item Weitere Informationen
+			\begin{itemize}
+				\item http://www.informatik.uni-hamburg.de/svs
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Beispiel für eine Abbildung}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
+				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+	\pause % Das Nachfolgende erst nach Klick einblenden...
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{pic/abbildung1.pdf}
+	\end{center}
+\end{frame}
+
+
+
+\begin{frame}
+	\transwipe % funktioniert nur bei Anzeige mit Acrobat Reader
+	\frametitle{Beispiel für eine Abbildung}
+	\begin{itemize}
+		\item Zweck
+			\begin{itemize}
+				\item Einem Kunden \emph{\color[RGB]{0,128,0} K} einen Inhalt \emph{\color{red} I} in einer bestimmten Weise zugänglich machen, ihn aber daran hindern, \emph{alles} damit tun zu können.
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{pic/abbildung2.pdf}
+	\end{center}
+\end{frame}
+
+
+
+
+
+\end{document}
