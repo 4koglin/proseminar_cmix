@@ -127,14 +127,28 @@
 \section{Motivation} % erscheint in Agenda
 
 \subsection{Chaumsche Mixe} % erscheint in Agenda
+\begin{frame}
+	\frametitle{Ansatz der Chaumische Mixe}
+	\begin{itemize}
+		\item Gewährleistung der Anonymität
+			\begin{itemize}
+				\item Mixe werden durchlaufen um die Beziehung zwischen Sender und Empfänger zu verschleiern
+		        \item Im Mixnetz findet eine „Zwiebelschalen“ artige Entschlüsselung statt
+		        \item Mithilfe der Rückadresse wird der Empfänger einer Nachricht bestimmt
+			\end{itemize}
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
 \subsection{Probleme} % erscheint in Agenda
 \begin{frame}
 	\frametitle{Probleme bisheriger Mix Verfahren}
 	\begin{itemize}
-		\item Zweck
+		\item In Echtzeitsystemen
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Lange warte Zeiten beim Sammeln der Nachrichten
+				\item Der Sammelschritt wird deshalb kurz gehalten oder sogar weggelassen
+				\item Das Verfahren wird somit angreifbarer
+				\item Für mobile Geräte ungeeignet aufgrund des großen Zeit und Energie Aufwands
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -143,10 +157,12 @@
 \begin{frame}
 	\frametitle{Idee von David Chaum}
 	\begin{itemize}
-		\item Zweck
+		\item Vermeidung von Schlüsselberechnungen in Echtzeit 
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Steigerung der Effizienz von Mix-Netzen
+				\item Energieaufwand verringern
+				\item Schlüsselberechnung vor der Kommunikation
+				\item Schlüssel Austausch zwischen Sender und Mixknoten
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -313,10 +329,11 @@
 \begin{frame}
 	\frametitle{Anonymität}
 	\begin{itemize}
-		\item Zweck
+		\item Anhand eines Modells
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Private Kommunikation der Mixknoten untereinander und eines vertraulichen dritten Punktes
+				\item Keine Kryptographischen Operation, Sicherstellung durch den vertraulichen dritten Punkt
+				\item „reale Simulation“ des Modells mit Eigenschaften des cMix Protokolls zeigt Anonymität
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -325,10 +342,13 @@
 \begin{frame}
 	\frametitle{Integrität}
 	\begin{itemize}
-		\item Zweck
+		\item Die Integrität ist gegeben wenn
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Die Nachricht M unmodifiziert und an den Empfänger weitergeleitet wird oder...
+				\item Alle Mixknoten wissen, dass das cMix Protokoll nicht richtig durchgeführt wurde
+					\begin{itemize}
+						\item Sicherstellung durch den Mechanismus „Randomized Partial Checking“
+					\end{itemize}
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
