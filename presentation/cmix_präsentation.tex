@@ -126,7 +126,7 @@
 
 \section{Motivation} % erscheint in Agenda
 
-\subsection{Chaumsche Mixe} % erscheint in Agenda
+
 \begin{frame}
 	\frametitle{Ansatz der Chaumische Mixe}
 	\begin{itemize}
@@ -139,7 +139,7 @@
 	\end{itemize}
 	\vspace{\fill}
 \end{frame}
-\subsection{Probleme} % erscheint in Agenda
+
 \begin{frame}
 	\frametitle{Probleme bisheriger Mix Verfahren}
 	\begin{itemize}
@@ -153,7 +153,7 @@
 	\end{itemize}
 	\vspace{\fill}
 \end{frame}
-\subsection{Idee} % erscheint in Agenda
+
 \begin{frame}
 	\frametitle{Idee von David Chaum}
 	\begin{itemize}
@@ -168,56 +168,73 @@
 	\vspace{\fill}
 \end{frame}
 
-
-\section{c-mix Verfahren} % erscheint in Agenda
-\subsection{Übersicht} % erscheint in Agenda
+\section{Elgamal-Verschlüsselungsverfahren}
 \begin{frame}
-	\frametitle{Kommunkationsübersicht}
+	\frametitle{Elgamal}
 	\begin{itemize}
-		\item Zweck
+		\item Elgamal-Verschlüsselungsverfahren
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item asymmetrisch
+				\item basiert auf Diffie-Hellman-Schlüsselaustausch
+				\item diskreter Logarithmus als Einweg-Funktion
+				\item diskrete Exponentialfunktion $b^x \mod m$ -> einfach zu berechnen
+				\item bisher kein effiziente Berechnung der Umkehrfunktion bekannt
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
 \end{frame}
+
+\section{c-mix Verfahren} % erscheint in Agenda
+
+\begin{frame}
+	\frametitle{Kommunkationsübersicht}
+	\begin{center}
+				\includegraphics [width=0.8\textwidth]{pic/commover.png}
+			\end{center}
+	\vspace{\fill}
+\end{frame}
+
+
+
 
 \begin{frame}
 	\frametitle{Übersicht der zwei Phasen}
 	\begin{itemize}
-		\item Zweck
+		\item Precomputation Phase
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item 1
+			\end{itemize}
+		\item Realtime Phase
+			\begin{itemize}
+				\item 2
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
 \end{frame}
+
 
 \begin{frame}
 	\frametitle{Vorbereitung}
 	\begin{itemize}
-		\item Zweck
+		\item User
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Symmetrischer Schlüssel $K_{i,j}$ zwischen jedem User $U_j$ user jedem Node $N_i$ 
+				\item Austausch des Schlüssels z.B. mit Diffie-Hellman
+				\item $K_{i,j}$ wird später als Eingabe für Pseudozufallszahlengenerators verwendet
+				\item User und Node könne für jede Runde den gleichen Schlüssel generieren.
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
 \end{frame}
 
-\subsection{Precomputation Phase} % erscheint in Agenda
 
 \begin{frame}
 	\frametitle{Precomputation - Step 1}
 	\begin{itemize}
 				\item Pre Processing
 
-				\item Knoten $N_1$, ... $N_n$ erzeugen einen zufälligen Vektor $r_i$
-				\begin{itemize}
-					\item Vektor enthält einen zufälligen Wert für jeden Nachrichtenslot
-				\end{itemize}
+				\item Knoten $N_1$, ... $N_n$ erzeugt einen Vektor $r_i$ aus zufälligen Werten für jede Nachricht
+
 				\item Verschlüsselung mittes ElGamal $\rightarrow$ $E(r_i^{-1})$, Resultat wird an den Network Handler gesendet
 				\begin{itemize}
 					\item Diese Verschlüsselung muss dann in der Echzeitphase nicht mehr durchgeführt werden
@@ -232,8 +249,10 @@
 	\begin{itemize}
 				\item Mixing
 				\begin{enumerate}
+					\item Jeder Knoten legt Permutation $P(X)$ fest.
 					\item Jeder Knoten erzeugt einen weiteren zufälligen Vektor $s_i$
 					\item $E(R_n^{-1})$ wird von jedem Knoten nacheinander mit der jeweils festgelegten Permutation permutiert (Mixing) und gleichzeit der erzeugte $s_i^{-1}$ hineinmultipliziert
+					\item $s_i$ wird später für eine Nachrichtenantwort verwendet
 				\item Der letzte Knoten erzeugt damit $E(P_n(R_n^{-1}) \times S_n^{-1})$
 				\end{enumerate}
 
@@ -248,6 +267,7 @@
 		\begin{enumerate}
 			\item Jeder Knoten berechnet nun aus $E(P_n(R_n^{-1}) \times S_n^{-1})$ seinen Entschlüsselungsanteil $D(i, r)$ für den zufälligen Vektor $r_i$ aus Schritt 1.
 			\item Das jeder Knoten einen eigenen Entschlüsselungsanteil berechnen kann, liegt an der ElGamal Verschlüsselung, die diese Möglichkeit bietet.
+			\item $E(P_n(R_n^{-1}) \times S_n^{-1})$ kann nur mit allen Anteilen entschlüsselt werden
 		\end{enumerate}
 		
 	
@@ -276,14 +296,40 @@
 	\vspace{\fill}
 \end{frame}
 
-\subsection{Realtime Phase} % erscheint in Agendae
+\begin{frame}
+	\frametitle{Precomputation - Resultat}
+	\begin{itemize}
+		
+		\item Hinweg
+		\begin{enumerate}
+			\item $E(P_n(R_n^{-1}) \times S_n^{-1})$
+		\end{enumerate}
+		\item Rückweg
+		\begin{enumerate}
+			\item $E({S'}_1^{-1})$
+		\end{enumerate}
+		\item 
+		
+		 
+	\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+
 \begin{frame}
 	\frametitle{Echzeit Phase - Step 1}
 	\begin{itemize}
-		\item Preprocessing
+		\item Generierung mit gleichem Seed
 		\begin{enumerate}
-		\item Ein User verschüsselt seine Nachricht $M$ mit seinem Schüssel $M \times ka_i^{-1}$ und sendet diese an den NH, dieser erhält also $\color{Mahogany}M \times Ka^{-1}$
-		\item Nun sendet jeder Knoten $N_i$ seinen Wert $\color{BlueViolet}ka_i \times r_i$ an den NH.
+		\item User $U_j$ generiert aus $K_{i,j}$ Zufallszahl $ka_{i,j}$ für jeden Knoten, $Ka_j = \sum_{i=1}^n ka_{i,j}$
+		\item Verschlüsselung einer Nachricht mit $\color{OliveGreen} M_j \times Ka_j ^{-1}$
+		\item Network Handler $\color{OliveGreen}Ka_j ^{-1} \rightarrow Ka^{-1}$ $\rightarrow$ $\color{Mahogany} M \times Ka^{-1}$
+		\item Knoten $N_i$ generiert $ka_i$ $= \sum_{j=1}^m ka_{i,j}$ und sendet $\color{BlueViolet}ka_i \times r_i$ an den NH.
+		
+		\end{enumerate}
+		\item Austausch der Verschlüsselung
+		\begin{enumerate}
+		
 		\item Der NH kann damit die $Ka^{-1}$ mit den zufälligen Vektoren $r_i$ der Knoten austauschen
 		\item $ \color{Mahogany} M \times Ka^{-1}$ $\times \sum_{i=1}^n \color{BlueViolet}ka_i \times r_i$ $= M \times R_n$
 
@@ -299,7 +345,7 @@
 	\begin{itemize}
 		\item Mixing
 		\begin{itemize}
-			\item Jeder Knoten permutiert nacheinander $M \times R_n$ und multipliziert den zufälligen Vektor $S_i$ mit ein
+			\item Jeder Knoten permutiert (Nachrichten werden getauscht) nacheinander $M \times R_n$ und multipliziert den zufälligen Vektor $S_i$ mit ein
 			\item Der letzte Knoten erhält damit $\color{Mahogany}P_n(M \times R_n) \times S_n)$
 		\end{itemize}
 	\end{itemize}
@@ -309,23 +355,44 @@
 \begin{frame}
 	\frametitle{Echzeit Phase - Step 3}
 	\begin{itemize}
-		\item Entschlüsselungsanteil
+		\item Sammeln der Entschlüsselungsanteile
 			\begin{itemize}
 				\item Die Knoten $N_1$ bis $N_{i}$ senden ihren Entschlüsselungsanteil $D(i,x)$ an den NH
-				
+			\end{itemize}
+
 		\item Entschlüsselung
 		\begin{itemize}
 				\item Der NH Entschlüsselt $\color{OliveGreen} E(P_n(R_n^{-1}) \times S_n^{-1})$ mittels $D(n,x)$
 				\item $\color{Mahogany}P_n(M \times R_n) \times S_n$ $\times$ $\color{OliveGreen}P_n(R_n^{-1}) \times S_n^{-1} = \color{Emerald} P_n(M)$
-			\end{itemize}
 		\end{itemize}
-	\end{itemize}
+
+	
+	
+		\item Resultat
+		\begin{itemize}
+			\item $\color{Emerald} P_n(M)$ Ursprüngliche Nachrichten in vertauschter Reihenfolge
+			\item Keine direkte Verbindung zum Sender möglich
+		\end{itemize}
+	\end{itemize}		
 	\vspace{\fill}
 \end{frame}
 
 
-\section{Analyse}
-\subsection{Sicherheit}
+\begin{frame}
+	\frametitle{Echzeit Phase - Antwort}
+	\begin{itemize}
+		\item Sammeln der Entschlüsselungsanteile
+			\begin{itemize}
+				\item Die Knoten $N_1$ bis $N_{i}$ senden ihren Entschlüsselungsanteil $D(i,x)$ an den NH
+			\end{itemize}
+		\end{itemize}
+			
+	\vspace{\fill}
+\end{frame}
+
+
+\section{Sicherheit}
+
 \begin{frame}
 	\frametitle{Anonymität}
 	\begin{itemize}
@@ -369,7 +436,7 @@
 	\vspace{\fill}
 \end{frame}
 
-\subsection{Performance}
+\section{Performance}
 \begin{frame}
 	\frametitle{Protoyp}
 	\begin{itemize}
@@ -381,15 +448,16 @@
 				\item Bei einer 1024-bit ElGamal-Verschlüsselung
 				\item Starke Verbesserung das re-encryption Mixnet ist bis zu 8 mal	langsamer
 			\end{itemize}
-			\begin{center}
-				\includegraphics [scale=0.7]{pic/PrototypMessung.png}
-			\end{center}
+			
 	\end{itemize}
+	\begin{center}
+				\includegraphics [width=1\textwidth]{pic/PrototypMessung.png}
+			\end{center}
 	\vspace{\fill}
 \end{frame}
 
-\section{Andwendung}
-\subsection{Privategrety}
+\section{PrivaTegrity}
+
 \begin{frame}
 	\frametitle{Einbettung in PrivaTegrity}
 	\begin{itemize}
@@ -402,7 +470,7 @@
 	\vspace{\fill}
 \end{frame}
 
-\subsection{Kritik}
+
 \begin{frame}
 	\frametitle{Backdoor}
 	\begin{itemize}
