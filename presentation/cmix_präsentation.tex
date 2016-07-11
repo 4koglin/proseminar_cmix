@@ -145,10 +145,10 @@
 	\begin{itemize}
 		\item In Echtzeitsystemen
 			\begin{itemize}
-				\item Lange warte Zeiten beim Sammeln der Nachrichten
+				\item Lange Wartezeiten beim sammeln der Nachrichten
 				\item Der Sammelschritt wird deshalb kurz gehalten oder sogar weggelassen
 				\item Das Verfahren wird somit angreifbarer
-				\item Für mobile Geräte ungeeignet aufgrund des großen Zeit und Energie Aufwands
+				\item Für mobile Geräte ungeeignet aufgrund des großen Zeit- und Energieaufwands
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -162,7 +162,7 @@
 				\item Steigerung der Effizienz von Mix-Netzen
 				\item Energieaufwand verringern
 				\item Schlüsselberechnung vor der Kommunikation
-				\item Schlüssel Austausch zwischen Sender und Mixknoten
+				\item Schlüsselaustausch zwischen Sender und Mixknoten
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -399,8 +399,8 @@
 		\item Anhand eines Modells
 			\begin{itemize}
 				\item Private Kommunikation der Mixknoten untereinander und eines vertraulichen dritten Punktes
-				\item Keine Kryptographischen Operation, Sicherstellung durch den vertraulichen dritten Punkt
-				\item „reale Simulation“ des Modells mit Eigenschaften des cMix Protokolls zeigt Anonymität
+				\item Keine Kryptographischen Operationen, Sicherstellung durch den vertraulichen dritten Punkt
+				\item „Reale Simulation“ des Modells mit Eigenschaften des cMix Protokolls zeigt Anonymität
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -412,7 +412,7 @@
 		\item Die Integrität ist gegeben wenn
 			\begin{itemize}
 				\item Die Nachricht M unmodifiziert und an den Empfänger weitergeleitet wird oder...
-				\item Alle Mixknoten wissen, dass das cMix Protokoll nicht richtig durchgeführt wurde
+				\item Alle Mixknoten wissen, dass das cMix Protokoll richtig durchgeführt wurde
 					\begin{itemize}
 						\item Sicherstellung durch den Mechanismus „Randomized Partial Checking“
 					\end{itemize}
@@ -430,7 +430,7 @@
 					\begin{itemize}
 						\item z.B durch einen öffentlichen Schlüssel einer asymmetrischen Verschlüsselung
 					\end{itemize}
-				\item Diese Verschlüsselung vermeidet aufwändige Publickey-Operationen 
+				\item Diese Verschlüsselung vermeidet aufwändige Public-Key-Operationen 
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -438,7 +438,7 @@
 
 \section{Performance}
 \begin{frame}
-	\frametitle{Protoyp}
+	\frametitle{Prototyp}
 	\begin{itemize}
 		\item Performance Messung
 			\begin{itemize}
@@ -446,7 +446,7 @@
 				\item Auf Instanzen des Amazon Web Service EC2 getestet
 				\item Jeder Mixknoten hatte zwei Intel Xeon E5-2680 und 3,75 GB Arbeitsspeicher zur Verfügung
 				\item Bei einer 1024-bit ElGamal-Verschlüsselung
-				\item Starke Verbesserung das re-encryption Mixnet ist bis zu 8 mal	langsamer
+				\item Starke Verbesserung; Das re-encryption Mixnet ist bis zu 8 mal langsamer
 			\end{itemize}
 			
 	\end{itemize}
