@@ -168,21 +168,6 @@
 	\vspace{\fill}
 \end{frame}
 
-\section{Elgamal-Verschlüsselungsverfahren}
-\begin{frame}
-	\frametitle{Elgamal}
-	\begin{itemize}
-		\item Elgamal-Verschlüsselungsverfahren
-			\begin{itemize}
-				\item asymmetrisch
-				\item basiert auf Diffie-Hellman-Schlüsselaustausch
-				\item diskreter Logarithmus als Einweg-Funktion
-				\item diskrete Exponentialfunktion $b^x \mod m$ -> einfach zu berechnen
-				\item bisher kein effiziente Berechnung der Umkehrfunktion bekannt
-			\end{itemize}
-	\end{itemize}
-	\vspace{\fill}
-\end{frame}
 
 \section{c-mix Verfahren} % erscheint in Agenda
 
@@ -200,13 +185,16 @@
 \begin{frame}
 	\frametitle{Übersicht der zwei Phasen}
 	\begin{itemize}
+		\item Vorbereitung
 		\item Precomputation Phase
 			\begin{itemize}
-				\item 1
+				\item Hier werden aufwändige Public-Key Verschlüsselungen vorberechnet
+				\item 3 Schritte, Preprocessing, Mixing, Postprocessing
 			\end{itemize}
 		\item Realtime Phase
 			\begin{itemize}
-				\item 2
+				\item In dieser Phase findet die Kommunikation zwischen Sender und Empfänger statt
+				\item 3 Schritte, Preprocessing, Mixing, Postprocessing
 			\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -215,32 +203,34 @@
 
 \begin{frame}
 	\frametitle{Vorbereitung}
-	\begin{itemize}
-		\item User
+ Vorbedingungen an die User und Nodes
 			\begin{itemize}
 				\item Symmetrischer Schlüssel $K_{i,j}$ zwischen jedem User $U_j$ user jedem Node $N_i$ 
 				\item Austausch des Schlüssels z.B. mit Diffie-Hellman
 				\item $K_{i,j}$ wird später als Eingabe für Pseudozufallszahlengenerators verwendet
-				\item User und Node könne für jede Runde den gleichen Schlüssel generieren.
 			\end{itemize}
-	\end{itemize}
 	\vspace{\fill}
 \end{frame}
 
 
 \begin{frame}
 	\frametitle{Precomputation - Step 1}
-	\begin{itemize}
-				\item Pre Processing
-
+	
+\begin{itemize}
 				\item Knoten $N_1$, ... $N_n$ erzeugt einen Vektor $r_i$ aus zufälligen Werten für jede Nachricht
 
-				\item Verschlüsselung mittes ElGamal $\rightarrow$ $E(r_i^{-1})$, Resultat wird an den Network Handler gesendet
+				\item Verschlüsselung mittes ElGamal $\rightarrow$ $E(r_i^{-1})$ 
 				\begin{itemize}
 					\item Diese Verschlüsselung muss dann in der Echzeitphase nicht mehr durchgeführt werden
 				\end{itemize}
-				\item NH berechnet Produkt aus allen $E(r_n)$ $\rightarrow$ $E(R_n^{-1})$  
-		\end{itemize}
+				\item ElGamal
+				\begin{itemize}
+					\item asymmetrisches Verschlüsselungsverfahren
+					\item jeder Knoten hält einen Teil des privaten Schlüssels
+				\end{itemize}
+				\item NH fasst diese zusammen $E(r_i)$ $\rightarrow$ $E(R_n^{-1})$  
+				
+				\end{itemize}
 	\vspace{\fill}
 \end{frame}
 
@@ -249,12 +239,13 @@
 	\begin{itemize}
 				\item Mixing
 				\begin{enumerate}
-					\item Jeder Knoten legt Permutation $P(X)$ fest.
-					\item Jeder Knoten erzeugt einen weiteren zufälligen Vektor $s_i$
+					\item Nodes legen Permutation $P(X)$ fest.
+					\item Nodes erzeugen weiteren zufälligen Vektor $s_i$
 					\item $E(R_n^{-1})$ wird von jedem Knoten nacheinander mit der jeweils festgelegten Permutation permutiert (Mixing) und gleichzeit der erzeugte $s_i^{-1}$ hineinmultipliziert
-					\item $s_i$ wird später für eine Nachrichtenantwort verwendet
-				\item Der letzte Knoten erzeugt damit $E(P_n(R_n^{-1}) \times S_n^{-1})$
-				\end{enumerate}
+					\item $s_i$ wird später für eine Nachrichtenantwort verwendet					
+					\end{enumerate}
+				\item Der letzte Knoten erzeugt damit $\color{Mahogany}E(P_n(R_n^{-1}) \times S_n^{-1})$
+			
 
 	\end{itemize}
 	\vspace{\fill}
@@ -263,14 +254,14 @@
 \begin{frame}
 	\frametitle{Precomputation - Step 3}
 	\begin{itemize}
-		\item Post Processing
+		\item Entschüsselungsanteil
 		\begin{enumerate}
-			\item Jeder Knoten berechnet nun aus $E(P_n(R_n^{-1}) \times S_n^{-1})$ seinen Entschlüsselungsanteil $D(i, r)$ für den zufälligen Vektor $r_i$ aus Schritt 1.
+			\item Jeder Knoten berechnet nun aus $E(P_n(R_n^{-1}) \times S_n^{-1})$ seinen Entschlüsselungsanteil.
 			\item Das jeder Knoten einen eigenen Entschlüsselungsanteil berechnen kann, liegt an der ElGamal Verschlüsselung, die diese Möglichkeit bietet.
-			\item $E(P_n(R_n^{-1}) \times S_n^{-1})$ kann nur mit allen Anteilen entschlüsselt werden
+			
 		\end{enumerate}
 		
-	
+	\item $E(P_n(R_n^{-1}) \times S_n^{-1})$ kann nur mit allen Anteilen entschlüsselt werden
 	\end{itemize}
 	\vspace{\fill}
 \end{frame}
@@ -282,12 +273,12 @@
 		\item Step 1
 		\begin{enumerate}
 			\item Nodes erzeugen zufällige Vektoren $E({s'}_i^{-1})$ (ElGamal verschlüsselt).
-			\item Permutation rückwärts, der letzte Knoten beginnt, gleichzeitig werden $s'^{-1}$ dazumultipliziert
+			\item Permutation rückwärts, der letzte Knoten beginnt, gleichzeitig werden $s'^{-1}$ hinzugefügt
 			\item Der erste Knoten erhält $E({S'}_1^{-1})$
 		\end{enumerate}
 		\item Step 2
 		\begin{enumerate}
-			\item Wie vorher werden wieder Entschüsselungsanteile für $E({S'}_1^{-1})$ von allen Knoten berechnet
+			\item Wie vorher werden wieder Entschüsselungsanteile $D'_i$ für $E({S'}_1^{-1})$ von allen Knoten berechnet
 		\end{enumerate}
 		\item 
 		
@@ -302,11 +293,11 @@
 		
 		\item Hinweg
 		\begin{enumerate}
-			\item $E(P_n(R_n^{-1}) \times S_n^{-1})$
+			\item $E(P_n(R_n^{-1}) \times S_n^{-1})$, Entschlüsselungsanteil $D_i$
 		\end{enumerate}
 		\item Rückweg
 		\begin{enumerate}
-			\item $E({S'}_1^{-1})$
+			\item $E({S'}_1^{-1})$, Entschlüsselungsanteil $D'_i$
 		\end{enumerate}
 		\item 
 		
@@ -321,12 +312,21 @@
 	\begin{itemize}
 		\item Generierung mit gleichem Seed
 		\begin{enumerate}
-		\item User $U_j$ generiert aus $K_{i,j}$ Zufallszahl $ka_{i,j}$ für jeden Knoten, $Ka_j = \sum_{i=1}^n ka_{i,j}$
+		\item User $U_j$ generiert für jeden Knoten mittels Pseudozufallszahlengenerator einen neuen Schlüssel und fasst diese zusammen $Ka_j ^{-1}$
+		\item Startwert: der anfangs ausgetauschte symmetrische Schlüssel
 		\item Verschlüsselung einer Nachricht mit $\color{OliveGreen} M_j \times Ka_j ^{-1}$
-		\item Network Handler $\color{OliveGreen}Ka_j ^{-1} \rightarrow Ka^{-1}$ $\rightarrow$ $\color{Mahogany} M \times Ka^{-1}$
-		\item Knoten $N_i$ generiert $ka_i$ $= \sum_{j=1}^m ka_{i,j}$ und sendet $\color{BlueViolet}ka_i \times r_i$ an den NH.
+		\item Network Handler führt alle zusammen $\color{Mahogany} M \times Ka^{-1}$
+		\item Knoten $N_i$ generiert für jeden User wie oben Schlüssel und sendet $\color{BlueViolet}ka_i \times r_i$ an den NH.
 		
 		\end{enumerate}
+		
+		\end{itemize}
+	\vspace{\fill}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Echzeit Phase - Step 1}
+	\begin{itemize}
 		\item Austausch der Verschlüsselung
 		\begin{enumerate}
 		
@@ -345,8 +345,8 @@
 	\begin{itemize}
 		\item Mixing
 		\begin{itemize}
-			\item Jeder Knoten permutiert (Nachrichten werden getauscht) nacheinander $M \times R_n$ und multipliziert den zufälligen Vektor $S_i$ mit ein
-			\item Der letzte Knoten erhält damit $\color{Mahogany}P_n(M \times R_n) \times S_n)$
+			\item Jeder Knoten permutiert (Nachrichten werden getauscht) nacheinander $M \times R_n$ und fügt Vektor $S_i$ aus Precomputation Phase ein
+			\item Der letzte Knoten erhält  $\color{Mahogany}P_n(M \times R_n) \times S_n)$
 		\end{itemize}
 	\end{itemize}
 	\vspace{\fill}
@@ -357,7 +357,7 @@
 	\begin{itemize}
 		\item Sammeln der Entschlüsselungsanteile
 			\begin{itemize}
-				\item Die Knoten $N_1$ bis $N_{i}$ senden ihren Entschlüsselungsanteil $D(i,x)$ an den NH
+				\item Die Knoten  senden Entschlüsselungsanteile an den NH $\rightarrow D(n, x)$
 			\end{itemize}
 
 		\item Entschlüsselung
@@ -380,12 +380,38 @@
 
 \begin{frame}
 	\frametitle{Echzeit Phase - Antwort}
+	
+	Schritt 1
 	\begin{itemize}
-		\item Sammeln der Entschlüsselungsanteile
-			\begin{itemize}
-				\item Die Knoten $N_1$ bis $N_{i}$ senden ihren Entschlüsselungsanteil $D(i,x)$ an den NH
-			\end{itemize}
+		\item Antworten werden gesammelt $(M')$
+		
+		\item Die Mixknoten permutieren diese nun rückwärts und fügen $E(s')$ hinzu
+		\item Erste Knoten erzeugt dann $P'(M') \times E(S')$
+		\item Alle Knoten erzeugen neuen Key mittels PZG $Ka'_j$ und verknüpfen diesen mit Entschüsselungsanteil
+		\item  $E({S'}^{-1})$ kann entschüsselt werden
+		\item Resultat
+		\begin{itemize}
+		\item $P'(M') \times S' \times E({S'}^{-1}) \times D' \times Ka'$\\
+			= $P'(M') \times S' \times {S'}^{-1} \times Ka'$
+
 		\end{itemize}
+	\end{itemize}
+			
+	\vspace{\fill}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Echzeit Phase - Antwort}
+	
+	Schritt 2
+	\begin{itemize}
+		
+		\item   $P'(M') \times S' \times {S'}^{-1} \times Ka' =  \color{OliveGreen}P'(M') \times Ka'$
+
+		\item User $U_j$ kann $Ka'_j$ für seinen Nachrichtenslot erzeugen und Nachricht entschüsseln.
+		\end{itemize}
+
 			
 	\vspace{\fill}
 \end{frame}
@@ -460,26 +486,28 @@
 
 \begin{frame}
 	\frametitle{Einbettung in PrivaTegrity}
-	\begin{itemize}
-		\item Zweck
+ PrivaTegrity
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Sicherheitssystem basierend auf c-mix
+				\item Nachrichten werden in 1-Sekunden Intervallen gesammelt und gesendet
+				\item 10 Mixknoten in 10 verschiedenen Ländern
+				\item Wenn alle Mixknoten Betreiber kooperieren, kann Anonymität aufgedeckt werden
 			\end{itemize}
-	\end{itemize}
+
 	\vspace{\fill}
 \end{frame}
 
 
 \begin{frame}
-	\frametitle{Backdoor}
-	\begin{itemize}
-		\item Zweck
+	\frametitle{Fazit}
+ 
 			\begin{itemize}
-				\item Nur mit \alert{berechtigten Partnern} weiter kommunizieren
-				\item Verhindert unbefugte Inanspruchnahme von Betriebsmitteln
+				\item Prototyp ist effizienter und schneller als bisherige Verfahren
+				\item Anpassung für heutige Kommunikationsgeräte (Smartphone, Laptop)
+				\item Anonymes Chatten, Fotosharing, Bezahlsysteme, Suche
+				\item Möglichkeit zur gezielten Aufdeckung wird teilweise kritisch betrachtet
 			\end{itemize}
-	\end{itemize}
+
 	\vspace{\fill}
 \end{frame}
 
